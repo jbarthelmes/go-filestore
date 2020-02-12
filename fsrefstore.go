@@ -170,7 +170,7 @@ func (f *FileManager) readFileDataObj(c cid.Cid, d *pb.DataObj) ([]byte, error) 
 	}
 
 	p := filepath.FromSlash(d.GetFilePath())
-	abspath := filepath.Join(f.root, p)
+	abspath := p
 
 	fi, err := os.Open(abspath)
 	if os.IsNotExist(err) {
@@ -281,16 +281,8 @@ func (f *FileManager) putTo(b *posinfo.FilestoreNode, to putter) error {
 		if !f.AllowFiles {
 			return ErrFilestoreNotEnabled
 		}
-		if !filepath.HasPrefix(b.PosInfo.FullPath, f.root) { //nolint:staticcheck
-			return fmt.Errorf("cannot add filestore references outside ipfs root (%s)", f.root)
-		}
 
-		p, err := filepath.Rel(f.root, b.PosInfo.FullPath)
-		if err != nil {
-			return err
-		}
-
-		dobj.FilePath = filepath.ToSlash(p)
+		dobj.FilePath = filepath.ToSlash(b.PosInfo.FullPath)
 	}
 	dobj.Offset = b.PosInfo.Offset
 	dobj.Size_ = uint64(len(b.RawData()))

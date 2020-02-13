@@ -1,4 +1,4 @@
-module github.com/ipfs/go-filestore
+module github.com/jbarthelmes/go-filestore
 
 go 1.12
 
